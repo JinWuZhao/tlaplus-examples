@@ -2,3 +2,4 @@ states/
 *.out
 *.pdf
 *.tex
+*.dvi
