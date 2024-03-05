@@ -34,7 +34,13 @@ Rsp(p) == /\ ctl[p] = "done"
           /\ ctl' = [ctl EXCEPT ![p] = "rdy"]
           /\ UNCHANGED <<mem, buf>>
 
-INext == \E p \in Proc: Req(p) \/ Do(p) \/ Rsp(p)
+Restart == /\ Terminited(memInt)
+           /\ mem' \in [Adr -> Val]
+           /\ ctl' = [p \in Proc |-> "rdy"]
+           /\ buf' = [p \in Proc |-> NoVal]
+           /\ ResetMemInt(memInt, memInt')
+
+INext == \E p \in Proc: Req(p) \/ Do(p) \/ Rsp(p) \/ Restart
 
 ISpec == IInit /\ [][INext]_<<memInt, mem, ctl, buf>>
 

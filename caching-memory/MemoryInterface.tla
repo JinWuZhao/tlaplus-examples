@@ -8,18 +8,24 @@ CONSTANTS
     Adr,
     Val,
     NoVal,
-    ClockCycle
+    MaxPC
 
-ASSUME (ClockCycle \in Nat) /\ (ClockCycle >= 0)
+ASSUME (MaxPC \in Nat) /\ (MaxPC > 0)
 
 Send(p, d, miOld, miNew) == /\ memInt = miOld
-                            /\ IF memInt < ClockCycle 
-                               THEN miNew = memInt + 1 
-                               ELSE miNew = 0
+                            /\ memInt < MaxPC
+                            /\ miNew = memInt + 1
 
-Reply(p, d, miOld, miNew) == Send(p, d, miOld, miNew)
+Reply(p, d, miOld, miNew) == /\ memInt = miOld
+                             /\ memInt <= MaxPC
+                             /\ miNew = memInt + 1
+
+Terminited(mi) == memInt >= MaxPC
+
+ResetMemInt(miOld, miNew) == /\ memInt = miOld
+                             /\ miNew = 0
 
 MReq == [op: {"Rd"}, adr: Adr] \union [op: {"Wr"}, adr: Adr, val: Val]
 
-InitMemInt(i) == i = 0
+InitMemInt(mi) == mi = 0
 ====
