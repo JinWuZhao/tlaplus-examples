@@ -1,11 +1,6 @@
 ---- MODULE Memory ----
 EXTENDS TLC, MemoryInterface
 
-VARIABLES mem, ctl, buf
-
-Inner == INSTANCE InternalMemory
-
-Spec == Inner!ISpec
-
-THEOREM Spec => Inner!TypeInvariant
+Inner(mem, ctl, buf) == INSTANCE InternalMemory 
+Spec == \E mem, ctl, buf : Inner(mem, ctl, buf)!ISpec 
 ====

@@ -3,29 +3,16 @@ EXTENDS TLC, Naturals
 
 VARIABLE memInt
 
-CONSTANTS
-    Proc,
-    Adr,
-    Val,
-    NoVal,
-    MaxPC
-
-ASSUME (MaxPC \in Nat) /\ (MaxPC > 0)
-
-Send(p, d, miOld, miNew) == /\ memInt = miOld
-                            /\ memInt < MaxPC
-                            /\ miNew = memInt + 1
-
-Reply(p, d, miOld, miNew) == /\ memInt = miOld
-                             /\ memInt <= MaxPC
-                             /\ miNew = memInt + 1
-
-Terminited(mi) == memInt >= MaxPC
-
-ResetMemInt(miOld, miNew) == /\ memInt = miOld
-                             /\ miNew = 0
+CONSTANTS Proc,
+          Adr,
+          Val
 
 MReq == [op: {"Rd"}, adr: Adr] \union [op: {"Wr"}, adr: Adr, val: Val]
 
-InitMemInt(mi) == mi = 0
+NoVal == CHOOSE v : v \notin Val
+
+InitMemInt == {<<CHOOSE p \in Proc : TRUE, NoVal>>}
+
+Send(p, d, oldMemInt, newMemInt)  ==  newMemInt = <<p, d>>
+Reply(p, d, oldMemInt, newMemInt) ==  newMemInt = <<p, d>>
 ====

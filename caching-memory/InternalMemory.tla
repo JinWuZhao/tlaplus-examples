@@ -7,9 +7,9 @@ TypeInvariant == /\ mem \in [Adr -> Val]
                  /\ buf \in [Proc -> MReq \union Val \union {NoVal}]
 
 IInit == /\ mem \in [Adr -> Val]
-         /\ ctl = [p \in Proc |-> "rdy"]
-         /\ buf = [p \in Proc |-> NoVal]
-         /\ InitMemInt(memInt)
+         /\ ctl = [p \in Proc |-> "rdy"] 
+         /\ buf = [p \in Proc |-> NoVal] 
+         /\ memInt \in InitMemInt
 
 Req(p) == /\ ctl[p] = "rdy"
           /\ \E req \in MReq:
@@ -34,13 +34,7 @@ Rsp(p) == /\ ctl[p] = "done"
           /\ ctl' = [ctl EXCEPT ![p] = "rdy"]
           /\ UNCHANGED <<mem, buf>>
 
-Restart == /\ Terminited(memInt)
-           /\ mem' \in [Adr -> Val]
-           /\ ctl' = [p \in Proc |-> "rdy"]
-           /\ buf' = [p \in Proc |-> NoVal]
-           /\ ResetMemInt(memInt, memInt')
-
-INext == \E p \in Proc: Req(p) \/ Do(p) \/ Rsp(p) \/ Restart
+INext == \E p \in Proc: Req(p) \/ Do(p) \/ Rsp(p)
 
 ISpec == IInit /\ [][INext]_<<memInt, mem, ctl, buf>>
 
